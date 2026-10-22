@@ -45,3 +45,37 @@ function checkCoin() {
 }
 
 document.addEventListener("keydown", movePlayer);
+
+
+/* Personaje del juego */
+#player {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ff914d;
+  color: white;
+  border: 3px solid #17324d;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
+/* Moneda dorada */
+#coin {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffd43b;
+  color: #805500;
+  border: 3px solid #e5a900;
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
