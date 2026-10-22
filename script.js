@@ -4,18 +4,34 @@ const coin = document.getElementById("coin");
 const scoreText = document.getElementById("score");
 const game = document.getElementById("game");
 
+const timerText = document.getElementById("timer");
+const bestText = document.getElementById("best");
+const restartButton = document.getElementById("restart");
+const message = document.getElementById("message");
+
 let x = 40;
 let y = 150;
 let score = 0;
+let timeLeft = 60;
+let gameOver = false;
+let timerId;
 
 const step = 20;
 const playerSize = 38;
 
+let best = Number(localStorage.getItem("recordMonedas")) || 0;
+bestText.textContent = best;
+
 function movePlayer(event) {
+  if (gameOver) return;
+
   if (event.key === "ArrowRight") x += step;
-  if (event.key === "ArrowLeft") x -= step;
-  if (event.key === "ArrowUp") y -= step;
-  if (event.key === "ArrowDown") y += step;
+  else if (event.key === "ArrowLeft") x -= step;
+  else if (event.key === "ArrowUp") y -= step;
+  else if (event.key === "ArrowDown") y += step;
+  else return;
+
+  event.preventDefault();
 
   x = Math.max(0, Math.min(x, game.clientWidth - playerSize));
   y = Math.max(0, Math.min(y, game.clientHeight - playerSize));
@@ -24,6 +40,14 @@ function movePlayer(event) {
   player.style.top = y + "px";
 
   checkCoin();
+}
+
+function placeCoin() {
+  const maxX = Math.max(0, game.clientWidth - coin.offsetWidth);
+  const maxY = Math.max(0, game.clientHeight - coin.offsetHeight);
+
+  coin.style.left = Math.floor(Math.random() * maxX) + "px";
+  coin.style.top = Math.floor(Math.random() * maxY) + "px";
 }
 
 function checkCoin() {
@@ -36,46 +60,54 @@ function checkCoin() {
     score++;
     scoreText.textContent = score;
 
-    const maxX = game.clientWidth - 40;
-    const maxY = game.clientHeight - 40;
+    if (score > best) {
+      best = score;
+      bestText.textContent = best;
+      localStorage.setItem("recordMonedas", best);
+    }
 
-    coin.style.left = Math.floor(Math.random() * maxX) + "px";
-    coin.style.top = Math.floor(Math.random() * maxY) + "px";
+    placeCoin();
   }
 }
 
+function endGame() {
+  gameOver = true;
+  clearInterval(timerId);
+  message.textContent = `¡Tiempo terminado! Conseguíste ${score} puntos.`;
+  restartButton.hidden = false;
+}
+
+function startGame() {
+  clearInterval(timerId);
+
+  x = 40;
+  y = 150;
+  score = 0;
+  timeLeft = 60;
+  gameOver = false;
+
+  scoreText.textContent = score;
+  timerText.textContent = timeLeft;
+  message.textContent = "";
+  restartButton.hidden = true;
+
+  player.style.left = x + "px";
+  player.style.top = y + "px";
+
+  placeCoin();
+
+  timerId = setInterval(() => {
+    timeLeft--;
+    timerText.textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      endGame();
+    }
+  }, 1000);
+}
+
 document.addEventListener("keydown", movePlayer);
+restartButton.addEventListener("click", startGame);
 
-
-/* Personaje del juego */
-#player {
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ff914d;
-  color: white;
-  border: 3px solid #17324d;
-  border-radius: 50%;
-  font-size: 22px;
-  font-weight: bold;
-  box-sizing: border-box;
-}
-
-/* Moneda dorada */
-#coin {
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffd43b;
-  color: #805500;
-  border: 3px solid #e5a900;
-  border-radius: 50%;
-  font-size: 20px;
-  font-weight: bold;
-  box-sizing: border-box;
-}
+startGame();
 
