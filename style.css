@@ -1,0 +1,42 @@
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #dff6ff;
+  color: #17324d;
+  margin: 0;
+  padding: 25px;
+}
+
+h1 {
+  color: #087f8c;
+}
+
+#game {
+  position: relative;
+  width: 600px;
+  max-width: 95%;
+  height: 350px;
+  margin: 20px auto;
+  background: linear-gradient(#87ceeb 70%, #71c562 70%);
+  border: 4px solid #17324d;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#player,
+#coin {
+  position: absolute;
+  font-size: 38px;
+  user-select: none;
+}
+
+#player {
+  left: 40px;
+  top: 150px;
+}
+
+#coin {
+  left: 300px;
+  top: 150px;
+}
